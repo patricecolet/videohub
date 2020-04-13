@@ -109,53 +109,53 @@ function UploadFiles($ftpenable)
 	{
 		return "<p> Il manque le titre de la vidéo !<p><br />\n";
 	}
-	$filelist = array("mp4", "ogg", "jpeg");
-	foreach ($filelist as &$value)
+	if($ftpenable == 1) 
 	{
-		$file = $value . "file";
-		
-// vérifie avant d'aller plus loin si le fichier a été téléchargé sur le serveur PHP		
-		if (is_uploaded_file($_FILES[$file]["tmp_name"]))
+		$ftp_server 	=	GetScriptParameter("ftpserver","");
+		$ftp_path 	=	GetScriptParameter("ftppath","");
+		$ftp_login		=	GetScriptParameter("ftplogin","");
+		$ftp_password	=	GetScriptParameter("ftppassword","");
+		$http_server 	=	GetScriptParameter("httpserver","");
+		$s .= ftpUpload($videotitle,$ftp_server,$ftp_login,$ftp_password,$http_server);
+	}
+	else 
+	{
+		$filedir = "video/" . $videotitle;
+// vérifie si le dossier a déjà été créé, et le crée dans le cas échéant
+		if(is_dir($filedir))
 		{
-			$filename = $_FILES[$file]["name"];
-			$type = $_FILES[$file]['type'];	
-			$tmp_file = $_FILES[$file]["tmp_name"];
-			
-			if($ftpenable == 1) 
+			$s .= "Le dossier " . $videotitle . " existe déjà<br />\n";
+		}
+		else
+		{
+			mkdir($filedir, 0777);
+		}
+		$filelist = array("mp4", "ogg", "jpeg");
+		foreach ($filelist as &$value)
+		{
+			$file = $value . "file";		
+// vérifie avant d'aller plus loin si le fichier a été téléchargé sur le serveur PHP		
+			if (is_uploaded_file($_FILES[$file]["tmp_name"]))
 			{
-				$ftp_server 	=	GetScriptParameter("ftpserver","");
-				$ftp_path 	=	GetScriptParameter("ftppath","");
-				$ftp_login		=	GetScriptParameter("ftplogin","");
-				$ftp_password	=	GetScriptParameter("ftppassword","");
-				$http_server 	=	GetScriptParameter("httpserver","");
-				$s .= ftpUpload($videotitle,$ftp_server,$ftp_login,$ftp_password,$http_server);
-			}
-			else 
-			{
-				$filedir = "video/" . $videotitle;
-				if(is_dir($filedir))
+				$filename = $_FILES[$file]["name"];
+				$type = $_FILES[$file]['type'];	
+				$tmp_file = $_FILES[$file]["tmp_name"];
+				$downloaded_file = $filedir . "/" . $filename;
+// vérifie si le fichier est présent
+				if (file_exists($downloaded_file))
 				{
-					$s .= "Le dossier " . $videotitle . " existe déjà<br />\n";
+					$s .= "Le fichier " . $downloaded_file . " existe déjà<br />\n";
 				}
 				else
 				{
-					$downloaded_file = $filedir . "/" . $filename;
-					if (file_exists($downloaded_file))
-					{
-						$s .= "Le fichier " . $downloaded_file . " existe déjà<br />\n";
-					}
-					else
-					{
-						mkdir($filedir, 0777);
-						move_uploaded_file($tmp_file, $downloaded_file);
-						$s .= $videotitle . "/" . $filename . " téléchargé<br /><br />\n";						
-					}
+					move_uploaded_file($tmp_file, $downloaded_file);
+					$s .= $videotitle . "/" . $filename . " téléchargé<br /><br />\n";						
 				}
 			}
-		}
-		else 
-		{
-			$errors[]= "Il manque le fichier " . $value . "<br />\n";
+			else 
+			{
+				$s .= "Il manque le fichier " . $value . "<br />\n";
+			}
 		}
 	}
 	return $s;
