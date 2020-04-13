@@ -14,6 +14,7 @@
 // ----------------------------------------------------------------------------
 include_once("settings.php");
 include_once("common.php");
+require_once('getid3/getid3.php');
 set_time_limit(0);
 
 define("SCRIPT_TITLE","Upload Video");
@@ -148,8 +149,15 @@ function UploadFiles($ftpenable)
 				}
 				else
 				{
+					if ($type == "video/" . $value) 
+					{
+						$getID3 = new getID3;
+						$ThisFileInfo = $getID3->analyze($tmp_file);
+						$s .= "<p>" . $filename . " size is: " . $ThisFileInfo['filesize'] . "</p>\n";
+						$s .= "<p>" . $filename . " duration is: " . $ThisFileInfo['playtime_string'] . "</p>\n";	
+					}
 					move_uploaded_file($tmp_file, $downloaded_file);
-					$s .= $videotitle . "/" . $filename . " téléchargé<br /><br />\n";						
+					$s .= "<p>" . $videotitle . "/" . $filename . " téléchargé</p>\n";						
 				}
 			}
 			else 
