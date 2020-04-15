@@ -23,6 +23,8 @@ define("FTP_SERVER","ftpperso.free.fr");
 define("FTP_PATH","/nykto/media/");
 define("HTTP_SERVER","http://megalego.free.fr");
 
+define("JSON_FILE", "../../assets/librairies/videoPlayer-master/source/videos.json");
+define("FOLDER_VIDEO","pat/site/");
 
 
 // -----------------------------------------------------------------------------
@@ -101,6 +103,11 @@ function UploadFiles($ftpenable)
 
 	$s				=	"";
 	$errors			=	array();
+	$arrayForJson["type"] = array();
+        $arrayForJson["filename"]= array();
+        $arrayForJson["name"]= array();
+        $arrayForJson["source"]= array();
+        $arrayForJson["duration"]= array();
 // récupère les données du formulaire
 
 	$videotitle		=	GetScriptParameter("videotitle","");
@@ -157,7 +164,18 @@ function UploadFiles($ftpenable)
 						$s .= "<p>" . $filename . " duration is: " . $ThisFileInfo['playtime_string'] . "</p>\n";	
 					}
 					move_uploaded_file($tmp_file, $downloaded_file);
-					$s .= "<p>" . $videotitle . "/" . $filename . " téléchargé</p>\n";						
+					$s .= "<p>" . $videotitle . "/" . $filename . " téléchargé</p>\n";	
+					
+					 // array for the json update
+                                        if($filename !== null){
+                                            array_push($arrayForJson["type"],$type);
+                                            array_push($arrayForJson["filename"],$filename);
+                                            array_push($arrayForJson["name"],$videotitle);
+                                            array_push($arrayForJson["source"],$filedir);
+                                            array_push($arrayForJson["duration"],$ThisFileInfo['playtime_string']);
+                                        }
+
+					
 				}
 			}
 			else 
@@ -166,9 +184,63 @@ function UploadFiles($ftpenable)
 			}
 		}
 	}
+	 // function for the json update
+        editJsonFile($arrayForJson);
+	
 	return $s;
 }
 // ----------------------------------------------------------------------------
+
+
+
+function editJsonFile($arrayForJson){
+    
+    $jsonFile= JSON_FILE;
+    $folder = FOLDER_VIDEO;
+    $myArray["id"] = array();
+    $myArray["img"] = array();
+    $myArray["source"] = array();
+    $myArray["name"] = array();
+    $myArray["duration"] = array();
+    //var_dump($arrayForJson);
+ 
+    try{
+        // Get the contents of the JSON file 
+        $strJsonFileContents = file_get_contents($jsonFile);
+        // Convert to array 
+        $array = json_decode($strJsonFileContents, true);
+
+        $id= count($array);
+
+        $myArray["id"]=$id;
+        $nbTab = count($arrayForJson["type"]);
+        for($i=0;$i<$nbTab;$i++){
+
+            if($arrayForJson["type"][$i]=="image/jpeg" || $arrayForJson["type"][$i]=="image/png" || $arrayForJson["type"][$i]=="image/jpg"){
+                $myArray["img"]= $folder."".$arrayForJson["source"][$i]."/".$arrayForJson["filename"][$i]; 
+            }elseif($arrayForJson["type"][$i]=="video/mp4" || $arrayForJson["type"][$i]=="video/mpeg4" || $arrayForJson["type"][$i]=="video/ogv" || $arrayForJson["type"][$i]=="video/ogg"){
+                $myArray["name"]= $arrayForJson["name"][$i];
+                $myArray["source"] = $folder."".$arrayForJson["source"][$i]."/".$arrayForJson["filename"][$i];
+                $myArray["duration"]= $arrayForJson["duration"][$i];
+            }else{
+                var_dump("Autres type rencontré: ".$arrayForJson["type"][$i]);
+            }
+        }
+
+       // var_dump("===================================================================================================================");
+       // var_dump($myArray);
+       // var_dump("===================================================================================================================");
+       
+        // modify the array key/value
+        array_push($array, $myArray);
+        // push the new content inside the json file
+        file_put_contents($jsonFile, stripslashes(json_encode($array)));
+        var_dump("Fichier json mis à jour avec succès");
+     } catch (Exception $ex) {
+        var_dump("Erreur pendant le traitement: . $ex");
+    }
+}
+
 
 // ----------------------------------------------------------------------------
 
