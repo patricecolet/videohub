@@ -1,13 +1,7 @@
 [{
         "id": 0,
-        "img": "pat/site/video/Wave/jeNeVeuxPasComprendreCover.jpg",
-        "source": "pat/site/video/Wave/Logo_6_Wave2.mp4",
+        "img": "",
+        "source": "",
         "name": "Wave",
         "duration": "0:12"
-    }, {
-        "id": 1,
-        "img": "pat/site/video/vois/Bouche1N&B.png",
-        "source": "pat/site/video/vois/VideoT.mp4",
-        "name": "Je Te Vois",
-        "duration": "0:38"
-    }]
+    }, ]
