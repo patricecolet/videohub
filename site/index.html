@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset=utf-8>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/jpg" href="../.../../images/favicon.jpg" />
+    
+    <!-- bootstrap & fontawesome css -->
+    <link href="../../../bootstrap-4.0.0/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    <link href="../.../../fontawesome-free-5.13.0-web/css/all.min.css" rel="stylesheet" type="text/css"/>
+    <link href="../.../../fontawesome-free-5.13.0-web/css/fontawesome.min.css" rel="stylesheet" type="text/css"/>
+    <!-- videoPlayer css -->
+    <link href="../.../../videoPlayer-master/src/ocplayer.min.css" rel="stylesheet" type="text/css"/>
+    <link href="../.../../videoPlayer-master/index.css" rel="stylesheet" type="text/css"/>
+    <!-- css site -->
+    <link rel="StyleSheet" type="Text/css" href="../.../../../css/index.css"/>
+    <link rel="StyleSheet" type="Text/css" href="../.../../../css/indexMob.css"/>
+    
+      <!-- jquery -->
+    <script src="../.../../jquery/jquery.min.js" type="text/javascript"></script>
+    <!-- bootstrap & fontawesome js -->
+    <script src="../.../../bootstrap-4.0.0/dist/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="../.../../bootstrap-4.0.0/dist/js/bootstrap.bundle.min.js" type="text/javascript"></script>
+    <script src="../.../../fontawesome-free-5.13.0-web/js/all.min.js" type="text/javascript"></script>
+    <script src="../.../../fontawesome-free-5.13.0-web/js/fontawesome.min.js" type="text/javascript"></script>  
+         
+   <!-- videoPlayer js -->
+    <script src="../.../../videoPlayer-master/src/ojcplayer.min.js" type="text/javascript"></script>
+
+   
+    <link rel="stylesheet" href="./index.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <title>Videoplayer</title>
+
+<body>
+    <div class="container-player">
+        <div id="mediaPlayer">
+            <div class="lds-ring" id="preload" ><div></div><div></div><div></div><div></div></div>
+            <video id="media-video" preload="" controls>
+                <source class="video" src="https://www.html5rocks.com/en/tutorials/video/basics/devstories.mp4" type='video/mp4'>
+                <source class="video" src="https://www.html5rocks.com/en/tutorials/video/basics/devstories.mp4" type='video/mp4'>
+                <source class="video" src="https://www.html5rocks.com/en/tutorials/video/basics/devstories.mp4" type='video/mp4'>
+                <source class="video" src="https://www.html5rocks.com/en/tutorials/video/basics/devstories.mp4" type='video/mp4'>
+
+                <source class="video" src="http://thenewcode.com/assets/videos/ocean-small.mp4" type='video/webm'>
+            </video>
+            <div id="controls">
+                <button id=play><i class="fas fa-pause"></i></button>
+                <button id=audioVolume class="fas fa-volume-off"></button>
+                <div id="progressBar">
+                    <div id="progress"></div>
+                </div>
+                <div id="timer">
+                    <span id="start"> 0 : 00</span>
+                </div>
+                <button id=expand><i class="fas fa-expand"></i></button>
+            </div>
+        </div>
+        <div id="playlist">  
+        </div>
+    </div>
+
+    <script src="./scripts/main.js"></script>
+</body>
+
+</html>
