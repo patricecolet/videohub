@@ -23,8 +23,8 @@ define("FTP_SERVER","ftpperso.free.fr");
 define("FTP_PATH","/nykto/media/");
 define("HTTP_SERVER","http://megalego.free.fr");
 
-define("JSON_FILE", "../../assets/librairies/videoPlayer-master/source/videos.json");
-define("FOLDER_VIDEO","pat/site/");
+define("JSON_FILE", "./source/videos.json");
+define("FOLDER_VIDEO","/");
 
 
 // -----------------------------------------------------------------------------
