@@ -15,6 +15,7 @@
 include_once("settings.php");
 include_once("common.php");
 require_once('getid3/getid3.php');
+require_once('oggclass/ogg.class.php');
 set_time_limit(0);
 
 define("SCRIPT_TITLE","Upload Video");
@@ -156,25 +157,30 @@ function UploadFiles($ftpenable)
 				}
 				else
 				{
+					
+					move_uploaded_file($tmp_file, $downloaded_file);					
+					$getID3 = new getID3;
+					$ThisFileInfo = $getID3->analyze($downloaded_file);
+					$s .= "<p>" . $filename . " size is: " . $ThisFileInfo['filesize'] . "</p>\n";
+					array_push($arrayForJson["type"],$type);
+					array_push($arrayForJson["filename"],$filename);
+					array_push($arrayForJson["name"],$videotitle);
+					array_push($arrayForJson["source"],$filedir);
 					if ($type == "video/" . $value) 
 					{
-						$getID3 = new getID3;
-						$ThisFileInfo = $getID3->analyze($tmp_file);
-						$s .= "<p>" . $filename . " size is: " . $ThisFileInfo['filesize'] . "</p>\n";
-						$s .= "<p>" . $filename . " duration is: " . $ThisFileInfo['playtime_string'] . "</p>\n";	
+						if ($value == "mp4")
+						{
+							$duration = $ThisFileInfo['playtime_string'];
+						}
+						else if ($value == "ogg")
+						{
+							$duration = getOgvDuration($downloaded_file);
+						}
+						$s .= "<p>" . $filename . " duration is: " . $duration . "</p>\n";
+						array_push($arrayForJson["duration"],$duration);
 					}
-					move_uploaded_file($tmp_file, $downloaded_file);
 					$s .= "<p>" . $videotitle . "/" . $filename . " téléchargé</p>\n";	
-                    if($filename !== null)
-					{
-						array_push($arrayForJson["type"],$type);
-						array_push($arrayForJson["filename"],$filename);
-						array_push($arrayForJson["name"],$videotitle);
-						array_push($arrayForJson["source"],$filedir);
-						array_push($arrayForJson["duration"],$ThisFileInfo['playtime_string']);
-					}				
-// ajoute la vidéo dans la playlist
-					editJsonFile($arrayForJson);	
+					editJsonFile($arrayForJson);
 				}
 			}
 			else 
@@ -188,9 +194,24 @@ function UploadFiles($ftpenable)
 }
 // ----------------------------------------------------------------------------
 
+function getOgvDuration($ogvFile)
+{
+	$video	=	new Ogg ($ogvFile);
+	if ($video->LastError) 
+	{ 
+		echo $video->LastError; 
+		exit; 
+	}
+	$str 				=	 substr(strstr($video->Streams['summary'],"(theora): "),10);
+	$seconds 	=	 substr($str,0,strpos($str,"s"));
+	$mins = floor($seconds / 60 % 60);
+	$secs = floor($seconds % 60);
+	return sprintf('%d:%02d', $mins, $secs);;
+}
+// ---------------------------------------------------------------------------
 
-
-function editJsonFile($arrayForJson){
+function editJsonFile($arrayForJson)
+{
     
     $jsonFile= JSON_FILE;
     $folder = FOLDER_VIDEO;
@@ -216,8 +237,6 @@ function editJsonFile($arrayForJson){
 			$array=[];
 			$id = 0;
 		}
-			
-
         $myArray["id"]=$id;
         $nbTab = count($arrayForJson["type"]);
         for($i=0;$i<$nbTab;$i++){
