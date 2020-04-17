@@ -5,8 +5,8 @@
 	PROJECT		:	video upload
 	FILE			:	upload.php
 	GOAL			:	upload media on ftp server
-	AUTHOR		:	patko & alien_genius
-	COPYRIGHT	:	Copyright 2020 (c) Alien Genius Software Solutions & Nykto
+	AUTHOR		:	 alien_genius, patko , ajj
+	COPYRIGHT	:	Copyright 2020 (c) Alien Genius Software Solutions, Nykto, Cohmbox
 */
 // -----------------------------------------------------------------------------
 
@@ -23,7 +23,7 @@ define("FTP_SERVER","ftpperso.free.fr");
 define("FTP_PATH","/nykto/media/");
 define("HTTP_SERVER","http://megalego.free.fr");
 
-define("JSON_FILE", "./source/videos.json");
+define("JSON_FILE", "source/videos.json");
 define("FOLDER_VIDEO","/");
 
 
@@ -165,17 +165,16 @@ function UploadFiles($ftpenable)
 					}
 					move_uploaded_file($tmp_file, $downloaded_file);
 					$s .= "<p>" . $videotitle . "/" . $filename . " téléchargé</p>\n";	
-					
-					 // array for the json update
-                                        if($filename !== null){
-                                            array_push($arrayForJson["type"],$type);
-                                            array_push($arrayForJson["filename"],$filename);
-                                            array_push($arrayForJson["name"],$videotitle);
-                                            array_push($arrayForJson["source"],$filedir);
-                                            array_push($arrayForJson["duration"],$ThisFileInfo['playtime_string']);
-                                        }
-
-					
+                    if($filename !== null)
+					{
+						array_push($arrayForJson["type"],$type);
+						array_push($arrayForJson["filename"],$filename);
+						array_push($arrayForJson["name"],$videotitle);
+						array_push($arrayForJson["source"],$filedir);
+						array_push($arrayForJson["duration"],$ThisFileInfo['playtime_string']);
+					}				
+// ajoute la vidéo dans la playlist
+					editJsonFile($arrayForJson);	
 				}
 			}
 			else 
@@ -184,8 +183,6 @@ function UploadFiles($ftpenable)
 			}
 		}
 	}
-	 // function for the json update
-        editJsonFile($arrayForJson);
 	
 	return $s;
 }
@@ -209,8 +206,17 @@ function editJsonFile($arrayForJson){
         $strJsonFileContents = file_get_contents($jsonFile);
         // Convert to array 
         $array = json_decode($strJsonFileContents, true);
-
+		if(isset($array))
+		{
+			
         $id= count($array);
+		}
+		else
+		{
+			$array=[];
+			$id = 0;
+		}
+			
 
         $myArray["id"]=$id;
         $nbTab = count($arrayForJson["type"]);
