@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr" >
+    <head>
+       <meta charset="utf-8" />
+       <title>HTML5 Video player jQuery plugin</title>    
+       <link href="css/player-simple.css" rel="stylesheet" type="text/css" />
+       <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
+       <script type="text/javascript" src="js/jquery-ui.min.js"></script>
+       <script src="js/player-simple.js"></script>
+		</head>
+    <body>
+       <header>
+			<h2>HTML5 Video player jQuery plugin</h2>
+			</header>
+		<div class="container">
+			<div id="player">
+				<video  id="media-video" width="600" height="400" controls>
+					<source src="video/video.mp4" type="video/mp4">
+					</video>
+				<script>			
+					$(document).ready(function() {
+						$('video').videoPlayer({
+							'playerWidth' : 0.95,
+							'videoClass' : 'video' 
+							});
+						});
+					</script>
+				</div>	
+			<div id="playlist">  
+				</div>
+			</div>
+		</body>
+	</html>
